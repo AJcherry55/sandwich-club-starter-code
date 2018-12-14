@@ -18,7 +18,7 @@ import java.util.ListIterator;
 public class JsonUtils {
     //* The format we want our API to return */
     private static final String format = "json";
-    
+
     static JSONObject jsonData;
     static JSONObject name;
     static String mainName;

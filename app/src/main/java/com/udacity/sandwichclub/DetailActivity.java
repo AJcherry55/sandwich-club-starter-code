@@ -50,19 +50,7 @@ public class DetailActivity extends AppCompatActivity {
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
         parseSandwich(json);
-        //Sandwich sandwich = JsonUtils.parseSandwichJson(json);
-        /*if (sandwich == null) {
-            // Sandwich data unavailable
-            closeOnError();
-            return;
-        }
 
-        populateUI();
-        Picasso.with(this)
-                .load(sandwich.getImage())
-                .into(mSandwichImageView);
-
-        setTitle(sandwich.getMainName());*/
     }
 
     private void closeOnError() {
@@ -75,7 +63,7 @@ public class DetailActivity extends AppCompatActivity {
         new ParseSandwichData().execute(json);
 
     }
-    /
+    
     private class ParseSandwichData extends AsyncTask<String, Void, Sandwich>{
 
         @Override
