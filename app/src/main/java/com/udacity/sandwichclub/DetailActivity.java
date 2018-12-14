@@ -70,12 +70,12 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    //TODO: Create a parseSandwich method
+
     void parseSandwich(String json){
         new ParseSandwichData().execute(json);
 
     }
-    //TODO: Initialize a ParseSandwichData class and exicute the async task
+    /
     private class ParseSandwichData extends AsyncTask<String, Void, Sandwich>{
 
         @Override
