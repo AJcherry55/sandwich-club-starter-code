@@ -1,9 +1,11 @@
 package com.udacity.sandwichclub;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -14,19 +16,30 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
-
+    TextView mNameTextView;
+    ImageView mSandwichImageView;
+    TextView mIngredientsTextView;
+    TextView mAlsoKnownAsTextView;
+    TextView mPlaceOfOriginTextView;
+    TextView mDescriptionTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ImageView ingredientsIv = findViewById(R.id.image_iv);
+
+        mSandwichImageView = (ImageView)findViewById(R.id.image_iv);
+        mIngredientsTextView = (TextView)findViewById(R.id.ingredients_tv);
+        mAlsoKnownAsTextView = (TextView)findViewById(R.id.also_known_tv);
+        mPlaceOfOriginTextView = (TextView)findViewById(R.id.origin_tv);
+        mDescriptionTextView = (TextView)findViewById(R.id.description_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();
         }
 
+        assert intent != null;
         int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
         if (position == DEFAULT_POSITION) {
             // EXTRA_POSITION not found in intent
@@ -36,8 +49,9 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = JsonUtils.parseSandwichJson(json);
-        if (sandwich == null) {
+        parseSandwich(json);
+        //Sandwich sandwich = JsonUtils.parseSandwichJson(json);
+        /*if (sandwich == null) {
             // Sandwich data unavailable
             closeOnError();
             return;
@@ -46,9 +60,9 @@ public class DetailActivity extends AppCompatActivity {
         populateUI();
         Picasso.with(this)
                 .load(sandwich.getImage())
-                .into(ingredientsIv);
+                .into(mSandwichImageView);
 
-        setTitle(sandwich.getMainName());
+        setTitle(sandwich.getMainName());*/
     }
 
     private void closeOnError() {
@@ -56,7 +70,53 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    //TODO: Create a parseSandwich method
+    void parseSandwich(String json){
+        new ParseSandwichData().execute(json);
 
     }
+    //TODO: Initialize a ParseSandwichData class and exicute the async task
+    private class ParseSandwichData extends AsyncTask<String, Void, Sandwich>{
+
+        @Override
+        protected Sandwich doInBackground(String... param) {
+            if (param.length == 0) {
+                return null;
+            }
+            try {
+                Sandwich mSandwich = JsonUtils.parseSandwichJson(param[0]);
+                return mSandwich;
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Sandwich sandwich) {
+            if(sandwich != null){
+                setTitle(sandwich.getMainName());
+                for(int i =0;i<sandwich.getIngredients().size();i++) {
+                    mIngredientsTextView.append(sandwich.getIngredients().get(i)+"\n");
+                }
+                for(int i =0;i<sandwich.getAlsoKnownAs().size();i++) {
+                    mAlsoKnownAsTextView.append(sandwich.getAlsoKnownAs().get(i)+"\n");
+                }
+                mPlaceOfOriginTextView.append(sandwich.getPlaceOfOrigin()+"\n");
+                mDescriptionTextView.append(sandwich.getDescription()+"\n");
+                Picasso.with(getBaseContext())
+                        .load(sandwich.getImage())
+                        .into(mSandwichImageView);
+            }else{
+                closeOnError();
+
+            }
+
+
+        }
+    }
+    //TODO: Create a class called ParseSanwichData extending AsyncTask
+    //TODO: Override doInBackground method to call the JSonUtils.java function and parse data
+    //TODO: Override postExecute method to print the Sandwich details out to the screen
 }
