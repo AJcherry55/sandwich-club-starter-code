@@ -63,7 +63,7 @@ public class DetailActivity extends AppCompatActivity {
         new ParseSandwichData().execute(json);
 
     }
-    
+
     private class ParseSandwichData extends AsyncTask<String, Void, Sandwich>{
 
         @Override
@@ -85,17 +85,27 @@ public class DetailActivity extends AppCompatActivity {
         protected void onPostExecute(Sandwich sandwich) {
             if(sandwich != null){
                 setTitle(sandwich.getMainName());
-                for(int i =0;i<sandwich.getIngredients().size();i++) {
-                    mIngredientsTextView.append(sandwich.getIngredients().get(i)+"\n");
+                if(sandwich.getIngredients() != null) {
+                    for (int i = 0; i < sandwich.getIngredients().size(); i++) {
+                        mIngredientsTextView.append(sandwich.getIngredients().get(i) + "\n");
+                    }
                 }
-                for(int i =0;i<sandwich.getAlsoKnownAs().size();i++) {
-                    mAlsoKnownAsTextView.append(sandwich.getAlsoKnownAs().get(i)+"\n");
+                if(sandwich.getAlsoKnownAs() !=null) {
+                    for (int i = 0; i < sandwich.getAlsoKnownAs().size(); i++) {
+                        mAlsoKnownAsTextView.append(sandwich.getAlsoKnownAs().get(i) + "\n");
+                    }
                 }
-                mPlaceOfOriginTextView.append(sandwich.getPlaceOfOrigin()+"\n");
-                mDescriptionTextView.append(sandwich.getDescription()+"\n");
-                Picasso.with(getBaseContext())
-                        .load(sandwich.getImage())
-                        .into(mSandwichImageView);
+                if(sandwich.getPlaceOfOrigin() !=null) {
+                    mPlaceOfOriginTextView.append(sandwich.getPlaceOfOrigin() + "\n");
+                }
+                if(sandwich.getDescription() != null) {
+                    mDescriptionTextView.append(sandwich.getDescription() + "\n");
+                }
+                if(sandwich.getImage() != null) {
+                    Picasso.with(getBaseContext())
+                            .load(sandwich.getImage())
+                            .into(mSandwichImageView);
+                }
             }else{
                 closeOnError();
 
